@@ -4,7 +4,7 @@ const navigationItems = [
     { label: "Home", icon: Home },
     { label: "Library", icon: Library },
     { label: "Search", icon: Search },
-    { label: "ListMusic", icon: ListMusic },
+    { label: "Playlists", icon: ListMusic },
     { label: "Settings", icon: Settings },
 ];
 
