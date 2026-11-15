@@ -11,14 +11,15 @@ const navigationItems = [
 
 export default function Nagivation() {
     return (
-        <nav className=" bg-amber-200 flex items-center justify-center">
+        <nav className=" bg-amber-950 flex items-center justify-center">
             {navigationItems.map((item) => {
                 const Icon = item.icon;
                 return (
                     <NavLink
                         key={item.label}
                         to={item.path}
-                        className=""
+                        className={({ isActive }) =>
+                        `${isActive ? "text-purple-400" : "text-gray-400"}`}
                     >
                         <div className="py-2 px-4 flex flex-col items-center justify-center gap-0">
                             <Icon size={22} strokeWidth={1.6} />

@@ -1,6 +1,6 @@
 import { Outlet } from "react-router";
-import CardMusicPlayer from "../common/CardMusicPlayer";
 import Nagivation from "./Navigation";
+import MiniPlayer from "../common/MiniPlayer";
 
 export function MainLayout() {
     return (
@@ -9,7 +9,7 @@ export function MainLayout() {
                 <Outlet/>
             </main>
             <div className="sticky bottom-0">
-                <CardMusicPlayer />
+                <MiniPlayer />
                 <Nagivation />
             </div>
         </div>

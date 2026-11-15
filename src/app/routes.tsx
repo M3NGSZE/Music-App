@@ -1,10 +1,10 @@
 import { createBrowserRouter } from "react-router";
 import { MainLayout } from "../components/layout/MainLayout";
 import { HomePage } from "../features/home/pages/Homepage";
-import { LibraryPage } from "../features/library/pages/Librarypage";
 import { SearchPage } from "../features/search/pages/SearchPage";
 import { PlayListsPage } from "../features/playlists/pages/PlayListsPage";
 import { SettingPage } from "../features/settings/pages/SettingPage";
+import { LibraryPage } from "../features/library/pages/LibraryPage";
 
 const router = createBrowserRouter([
     {
