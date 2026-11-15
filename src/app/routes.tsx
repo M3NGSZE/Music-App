@@ -28,7 +28,7 @@ const router = createBrowserRouter([
                 element: <PlayListsPage />,
             },
             {
-                path: "player/:id",
+                path: "settings",
                 element: <SettingPage />,
             },
         ],
