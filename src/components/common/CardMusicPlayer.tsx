@@ -19,7 +19,7 @@ export default function CardMusicPlayer() {
                 </div>
                 <div className="flex items-center justify-center w-[20%]">
                     <button>
-                        <Pause size={26} />
+                        <Pause size={29} />
                     </button>
                 </div>
             </div>
