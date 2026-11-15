@@ -4,12 +4,14 @@ import Nagivation from "./Navigation";
 
 export function MainLayout() {
     return (
-        <>
-            <main>
+        <div className="min-h-screen flex flex-col">
+            <main className="flex-1">
                 <Outlet/>
             </main>
-            <CardMusicPlayer />
-            <Nagivation />
-        </>
+            <div className="sticky bottom-0">
+                <CardMusicPlayer />
+                <Nagivation />
+            </div>
+        </div>
     );
 }
