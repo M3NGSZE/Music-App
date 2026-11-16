@@ -17,7 +17,7 @@ export default function Nagivation() {
                     <NavLink
                         key={item.label}
                         to={item.path}
-                        className={({ isActive }) => `flex flex-1 flex-col items-center justify-center gap-1 rounded-full transition-all duration-300
+                        className={({ isActive }) => `flex flex-1 flex-col items-center justify-center gap-1 rounded-full transition-all duration-300 py-2
                                     ${isActive ? "bg-purple-400/20 text-purple-300 shadow-inner shadow-white/10" : "text-white/50 hover:text-white/90" }`} 
                     >
                         <Icon size={22} strokeWidth={1.6} />
