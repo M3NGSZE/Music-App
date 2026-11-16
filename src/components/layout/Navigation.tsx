@@ -1,12 +1,10 @@
-import { Home, Library, Search, ListMusic, Settings } from "lucide-react";
+import { Home, Library, Search } from "lucide-react";
 import { NavLink } from "react-router";
 
 const navigationItems = [
     { label: "Home", icon: Home, path: "/" },
     { label: "Library", icon: Library, path: "/library" },
-    { label: "Search", icon: Search, path: "/search" },
-    { label: "Playlists", icon: ListMusic, path: "/playlists" },
-    { label: "Settings", icon: Settings, path: "/settings" },
+    { label: "Search", icon: Search, path: "/search" }
 ];
 
 export default function Nagivation() {

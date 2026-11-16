@@ -7,7 +7,7 @@ export default function MiniPlayer() {
           <div className="flex w-[70%] p-2 gap-3">
             <div className="bg-gray-400 w-[20%] rounded-lg">
               <img
-                src="assets/music/album-cover.jpg"
+                src="assets/music/album-coverw.jpg"
                 alt=""
                 className="w-full rounded-lg"
               />

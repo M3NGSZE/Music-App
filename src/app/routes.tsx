@@ -2,9 +2,8 @@ import { createBrowserRouter } from "react-router";
 import { MainLayout } from "../components/layout/MainLayout";
 import { HomePage } from "../features/home/pages/Homepage";
 import { SearchPage } from "../features/search/pages/SearchPage";
-import { PlayListsPage } from "../features/playlists/pages/PlayListsPage";
-import { SettingPage } from "../features/settings/pages/SettingPage";
 import { LibraryPage } from "../features/library/pages/LibraryPage";
+import NotFoundPage from "../pages/NotFoundPage";
 
 const router = createBrowserRouter([
     {
@@ -24,13 +23,10 @@ const router = createBrowserRouter([
                 element: <SearchPage />,
             },
             {
-                path: "playlists",
-                element: <PlayListsPage />,
-            },
-            {
-                path: "settings",
-                element: <SettingPage />,
-            },
+                path: "*",
+                element: <NotFoundPage/>
+            }
+            
         ],
     },
 ]);
