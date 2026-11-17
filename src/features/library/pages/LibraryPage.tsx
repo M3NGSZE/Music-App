@@ -2,10 +2,10 @@ import { useState } from "react";
 import MainHeader from "../../../components/layout/MainHeader";
 import LibraryTabs, { type LibraryTab } from "../components/LibraryTabs";
 import SongList from "../components/SongList";
-import PlayList from "../components/Playlist";
 import FavoriteList from "../components/FavoriteList";
 import ArtistList from "../components/ArtistList";
 import AlbumList from "../components/AlbumList";
+import PlayList from "../components/PlayList";
 
 export function LibraryPage() {
 
@@ -15,17 +15,18 @@ export function LibraryPage() {
         <div>
             <MainHeader title="Library" />
 
+            <br />
             <LibraryTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
             {activeTab === "Songs" && <SongList />}
 
-            {activeTab === "Songs" && <PlayList />}
+            {activeTab === "Playlists" && <PlayList />}
 
-            {activeTab === "Songs" && <FavoriteList />}
+            {activeTab === "Favorites" && <FavoriteList />}
 
-            {activeTab === "Albums" && <ArtistList />}
+            {activeTab === "Artists" && <ArtistList />}
 
-            {activeTab === "Artists" && <AlbumList />}
+            {activeTab === "Albums" && <AlbumList />}
         </div>
     );
 }

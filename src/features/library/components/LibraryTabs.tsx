@@ -25,12 +25,22 @@ const LibraryTabs = ({
     ];
 
     return (
-        <div className="flex gap-2">
+        <div className="flex gap-2 overflow-x-auto flex-nowrap whitespace-nowrap scrollbar-hide hide-scrollbar -mx-6 px-6">
             {tabs.map((tab) => (
                 <button
                     key={tab}
                     onClick={() => onTabChange(tab)}
-                    className={activeTab === tab ? "active" : ""}
+                    className={`
+                        flex shrink-0 items-center justify-center
+                        rounded-full border px-5 py-3
+                        backdrop-blur-xl shadow-lg
+                        transition-all duration-200
+                        ${
+                            activeTab === tab
+                                ? "border-white/30 bg-white/25 text-white"
+                                : "border-white/15 bg-white/10 text-white/60 hover:bg-white/15"
+                        }
+                    `}
                 >
                     {tab}
                 </button>
