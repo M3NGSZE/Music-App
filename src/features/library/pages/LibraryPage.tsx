@@ -12,10 +12,10 @@ export function LibraryPage() {
     const [activeTab, setActiveTab] = useState<LibraryTab>("Songs");
 
     return (
-        <div>
+        <div className="flex flex-col gap-6">
+
             <MainHeader title="Library" />
 
-            <br />
             <LibraryTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
             {activeTab === "Songs" && <SongList />}
@@ -27,6 +27,7 @@ export function LibraryPage() {
             {activeTab === "Artists" && <ArtistList />}
 
             {activeTab === "Albums" && <AlbumList />}
+            
         </div>
     );
 }
