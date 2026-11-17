@@ -2,7 +2,7 @@ import { FastForward, Pause, Rewind } from "lucide-react";
 
 export default function MiniPlayer() {
     return (
-      <div className="fixed bottom-25px left-1/2 -translate-x-1/2 z-40 w-[90%] max-w-md">
+      <div className="w-[90%] max-w-md">
         <div
           className="flex items-center rounded-2xl border border-white/15 bg-white/8
                     backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.35)] p-2"
