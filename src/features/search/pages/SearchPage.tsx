@@ -1,7 +1,9 @@
+import MainHeader from "../../../components/layout/MainHeader";
+
 export function SearchPage() {
   return (
-    <>
-      <p>SearchPage</p>
-    </>
+    <div>
+      <MainHeader title="Search" />
+    </div>
   );
 }

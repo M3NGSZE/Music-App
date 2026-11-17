@@ -1,7 +1,9 @@
+import MainHeader from "../../../components/layout/MainHeader";
+
 export function HomePage() {
     return (
         <div className="">
-            <p>Home Page</p>
+            <MainHeader title="Home"/>
         </div>
     )
 }

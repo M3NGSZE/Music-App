@@ -1,0 +1,9 @@
+const PlayList = () => {
+    return(
+        <>
+            <p>PlayList</p>
+        </>
+    )
+};
+
+export default PlayList;
