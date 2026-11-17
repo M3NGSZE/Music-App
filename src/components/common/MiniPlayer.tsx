@@ -1,6 +1,14 @@
-import { FastForward, Pause, Rewind } from "lucide-react";
+import { FastForward, Pause, Rewind, Play } from "lucide-react";
+import { useState } from "react";
 
 export default function MiniPlayer() {
+
+  const [ isPlaying, setIsPlaying ] = useState( true );
+
+  const handlePlayPause = () => {
+    setIsPlaying( (previous) => !previous );
+  };
+
     return (
       <div className="w-[90%] max-w-md">
         <div
@@ -28,8 +36,11 @@ export default function MiniPlayer() {
               <Rewind size={20} />
             </button>
 
-            <button className="text-white transition hover:scale-110">
-              <Pause size={22} />
+            <button
+              className="text-white transition hover:scale-110"
+              onClick={handlePlayPause}
+            >
+              {isPlaying ? <Pause size={22} /> : <Play size={22} />}
             </button>
 
             <button className="text-white/70 transition hover:text-white">
