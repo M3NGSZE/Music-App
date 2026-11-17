@@ -6,7 +6,7 @@ export default function MiniPlayer() {
   const [ isPlaying, setIsPlaying ] = useState( true );
 
   const handlePlayPause = () => {
-    setIsPlaying( (previous) => !previous );
+    setIsPlaying( ( previous ) => !previous );
   };
 
     return (
