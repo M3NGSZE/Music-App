@@ -1,6 +1,6 @@
 import { Outlet } from "react-router";
 import Nagivation from "./Navigation";
-import MiniPlayer from "../common/MiniPlayer";
+import MiniPlayer from "./MiniPlayer";
 
 export function MainLayout() {
     return (
