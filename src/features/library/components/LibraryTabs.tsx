@@ -4,7 +4,8 @@ export type LibraryTab =
     | "Playlists"
     | "Favorites"
     | "Artists"
-    | "Albums";
+    | "Albums"
+    | "Folders";
 
 interface LibraryTabsProps {
     activeTab: LibraryTab;
@@ -21,7 +22,8 @@ const LibraryTabs = ({
         "Playlists",
         "Favorites",
         "Artists",
-        "Albums"
+        "Albums",
+        "Folders"
     ];
 
     return (

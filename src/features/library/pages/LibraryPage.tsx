@@ -6,6 +6,7 @@ import FavoriteList from "../components/FavoriteList";
 import ArtistList from "../components/ArtistList";
 import AlbumList from "../components/AlbumList";
 import PlayList from "../components/PlayList";
+import FolderList from "../components/FolderList";
 
 export function LibraryPage() {
 
@@ -27,6 +28,8 @@ export function LibraryPage() {
             {activeTab === "Artists" && <ArtistList />}
 
             {activeTab === "Albums" && <AlbumList />}
+
+            {activeTab === "Folders" && <FolderList />}
             
         </div>
     );
