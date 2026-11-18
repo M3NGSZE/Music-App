@@ -7,6 +7,7 @@ import ArtistList from "../components/ArtistList";
 import AlbumList from "../components/AlbumList";
 import PlayList from "../components/PlayList";
 import FolderList from "../components/FolderList";
+import MusicFilePickerTest from "../components/MusicFilePickerTest";
 
 export function LibraryPage() {
 
@@ -15,6 +16,8 @@ export function LibraryPage() {
     return (
         <div className="flex flex-col gap-6">
 
+            <MusicFilePickerTest />
+            
             <MainHeader title="Library" />
 
             <LibraryTabs activeTab={activeTab} onTabChange={setActiveTab} />
@@ -30,7 +33,7 @@ export function LibraryPage() {
             {activeTab === "Albums" && <AlbumList />}
 
             {activeTab === "Folders" && <FolderList />}
-            
+
         </div>
     );
 }
