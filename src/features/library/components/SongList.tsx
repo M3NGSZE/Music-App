@@ -24,7 +24,7 @@ const SongList = () => {
     return (
         <div className="flex flex-col">
             <div className="flex items-center justify-between px-2 mb-2">
-                <span>67 songs</span>
+                <span className="text-sm">67 songs</span>
                 <LibrarySort
                     sortBy={sortBy}
                     onSortChange={setSortBy}

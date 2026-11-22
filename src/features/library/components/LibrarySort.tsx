@@ -35,7 +35,8 @@ const LibrarySort = ({
             {/* Dropdown trigger */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex w-40 shrink-0 items-center justify-between gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-3 text-white backdrop-blur-xl shadow-lg transition-all hover:bg-white/15"
+                className="flex w-35 shrink-0 items-center justify-between gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-3 
+                text-white backdrop-blur-xl shadow-lg transition-all hover:bg-white/15"
             >
                 <ArrowDownWideNarrow size={18} />
 
@@ -53,7 +54,7 @@ const LibrarySort = ({
 
             {/* Dropdown options */}
             {isOpen && (
-                <div className="absolute right-0 top-full z-50 mt-2 min-w-40 overflow-hidden rounded-2xl border border-white/15 bg-neutral-900/90 p-2 shadow-xl backdrop-blur-xl">
+                <div className="absolute right-0 top-full z-50 mt-2 min-w-35 overflow-hidden rounded-2xl border border-white/15 bg-neutral-900/90 p-2 shadow-xl backdrop-blur-xl">
 
                     {sortOptions.map((option) => (
                         <button
