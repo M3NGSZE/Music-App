@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getMusicFileBlob, selectMusicFiles } from "../services/musicImportService";
 
 type PickedMusicFile = Awaited<
@@ -8,6 +8,15 @@ type PickedMusicFile = Awaited<
 export default function MusicFilePickerTest() {
     const [files, setFiles] = useState<PickedMusicFile[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [audioUrl, setAudioUrl] = useState<string | null>(null);
+
+    useEffect(() => {
+        return () => {
+            if (audioUrl) {
+                URL.revokeObjectURL(audioUrl);
+            }
+        };
+    }, [audioUrl]);
 
     async function handleSelectMusic() {
         try {
@@ -22,14 +31,13 @@ export default function MusicFilePickerTest() {
             for (const file of selectedFiles) {
                 const blob = await getMusicFileBlob(file);
 
+                const url = URL.createObjectURL(blob);
+
+                setAudioUrl(url);
+
                 console.log("Music name:", file.name);
                 console.log("Blob size:", blob.size);
                 console.log("Blob type:", blob.type);
-
-                console.log("Path:", file.path);
-                console.log("Web Path:", file.webPath);
-                console.log("MIME Type:", file.mimeType);
-                console.log("Size:", file.size);
             }
             
         } catch (err) {
@@ -65,6 +73,21 @@ export default function MusicFilePickerTest() {
                     </div>
                 ))}
             </div>
+
+            {audioUrl && (
+                <div className="mt-4">
+                    <p className="mb-2 text-white">
+                        Audio Playback Test
+                    </p>
+
+                    <audio
+                        controls
+                        src={audioUrl}
+                        className="w-full"
+                    />
+                </div>
+            )}
+            
         </div>
     );
 }
