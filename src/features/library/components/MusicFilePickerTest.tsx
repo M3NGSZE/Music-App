@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getMusicFileBlob, selectMusicFiles } from "../services/musicImportService";
+import { getMusicFileBlob, selectMusicFiles } from "../../../services/musicImportService";
 
 type PickedMusicFile = Awaited<
     ReturnType<typeof selectMusicFiles>
@@ -87,7 +87,7 @@ export default function MusicFilePickerTest() {
                     />
                 </div>
             )}
-            
+
         </div>
     );
 }
