@@ -14,6 +14,10 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
   async function play(source: Blob | string) {
     const audio = audioRef.current;
 
+    console.log("PLAY called");
+    console.log("Audio element:", audio);
+    console.log("Source:", source);
+
     if (!audio) return;
 
     // Release the previous temporary URL.
@@ -34,7 +38,12 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
     audio.src = audioSource;
     audio.load();
 
-    await audio.play();
+    try {
+      await audio.play();
+      console.log("Playback started");
+    } catch (error) {
+      console.error("PLAY failed:", error);
+    }
   }
 
   function pause() {
@@ -42,7 +51,21 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
   }
 
   async function resume() {
-    await audioRef.current?.play();
+    const audio = audioRef.current;
+
+    console.log("RESUME called");
+    console.log("Audio source:", audio?.src);
+    console.log("Audio paused:", audio?.paused);
+    console.log("Audio readyState:", audio?.readyState);
+
+    if (!audio || !audio.src || !audio.paused) return;
+
+    try {
+      await audio.play();
+      console.log("RESUME successful");
+    } catch (error) {
+      console.error("RESUME failed:", error);
+    }
   }
 
   useEffect(() => {

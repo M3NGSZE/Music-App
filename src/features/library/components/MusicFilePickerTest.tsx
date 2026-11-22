@@ -1,22 +1,16 @@
-import { useEffect, useState } from "react";
 import { getMusicFileBlob, selectMusicFiles } from "../../../services/musicImportService";
+import { useAudioPlayer } from "../../../context/useAudioPlayer";
+import { useState } from "react";
 
-type PickedMusicFile = Awaited<
-    ReturnType<typeof selectMusicFiles>
->[number];
+// type PickedMusicFile = Awaited<
+//     ReturnType<typeof selectMusicFiles>
+// >[number];
 
 export default function MusicFilePickerTest() {
-    const [files, setFiles] = useState<PickedMusicFile[]>([]);
+    //const [files, setFiles] = useState<PickedMusicFile[]>([]);
     const [error, setError] = useState<string | null>(null);
-    const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
-    useEffect(() => {
-        return () => {
-            if (audioUrl) {
-                URL.revokeObjectURL(audioUrl);
-            }
-        };
-    }, [audioUrl]);
+    const { play } = useAudioPlayer();
 
     async function handleSelectMusic() {
         try {
@@ -24,20 +18,18 @@ export default function MusicFilePickerTest() {
 
             const selectedFiles = await selectMusicFiles();
 
-            setFiles(selectedFiles);
+            //setFiles(selectedFiles);
 
             console.log("Selected music files:", selectedFiles);
 
             for (const file of selectedFiles) {
                 const blob = await getMusicFileBlob(file);
 
-                const url = URL.createObjectURL(blob);
-
-                setAudioUrl(url);
-
                 console.log("Music name:", file.name);
                 console.log("Blob size:", blob.size);
                 console.log("Blob type:", blob.type);
+
+                await play(blob);
             }
             
         } catch (err) {
@@ -60,7 +52,7 @@ export default function MusicFilePickerTest() {
                 <p className="mt-3 text-sm text-red-400">{error}</p>
             )}
 
-            <div className="mt-4 space-y-2">
+            {/* <div className="mt-4 space-y-2">
                 {files.map((file, index) => (
                     <div
                         key={`${file.name}-${index}`}
@@ -72,21 +64,7 @@ export default function MusicFilePickerTest() {
                         </p>
                     </div>
                 ))}
-            </div>
-
-            {audioUrl && (
-                <div className="mt-4">
-                    <p className="mb-2 text-white">
-                        Audio Playback Test
-                    </p>
-
-                    <audio
-                        controls
-                        src={audioUrl}
-                        className="w-full"
-                    />
-                </div>
-            )}
+            </div> */}
 
         </div>
     );

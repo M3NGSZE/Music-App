@@ -1,12 +1,27 @@
 import { FastForward, Pause, Rewind, Play } from "lucide-react";
-import { useState } from "react";
+// import { useState } from "react";
+import { useAudioPlayer } from "../../context/useAudioPlayer";
 
 export default function MiniPlayer() {
 
-  const [ isPlaying, setIsPlaying ] = useState( true );
+  // const [ isPlaying, setIsPlaying ] = useState( true );
 
-  const handlePlayPause = () => {
-    setIsPlaying( ( previous ) => !previous );
+  // const handlePlayPause = () => {
+  //   setIsPlaying( ( previous ) => !previous );
+  // };
+
+  const { isPlaying, pause, resume } = useAudioPlayer();
+
+  const handlePlayPause = async () => {
+    try {
+      if (isPlaying) {
+        pause();
+      } else {
+        await resume();
+      }
+    } catch (error) {
+      console.error("Audio playback error:", error);
+    }
   };
 
     return (
