@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { selectMusicFiles } from "../services/musicImportService";
+import { getMusicFileBlob, selectMusicFiles } from "../services/musicImportService";
 
 type PickedMusicFile = Awaited<
     ReturnType<typeof selectMusicFiles>
@@ -18,6 +18,20 @@ export default function MusicFilePickerTest() {
             setFiles(selectedFiles);
 
             console.log("Selected music files:", selectedFiles);
+
+            for (const file of selectedFiles) {
+                const blob = await getMusicFileBlob(file);
+
+                console.log("Music name:", file.name);
+                console.log("Blob size:", blob.size);
+                console.log("Blob type:", blob.type);
+
+                console.log("Path:", file.path);
+                console.log("Web Path:", file.webPath);
+                console.log("MIME Type:", file.mimeType);
+                console.log("Size:", file.size);
+            }
+            
         } catch (err) {
             setError(
                 err instanceof Error ? err.message : "Something went wrong."

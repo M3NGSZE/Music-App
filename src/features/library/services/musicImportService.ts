@@ -10,3 +10,24 @@ export async function selectMusicFiles() {
 
     return result.files;
 }
+
+export async function getMusicFileBlob(
+    file: Awaited<ReturnType<typeof selectMusicFiles>>[number]
+): Promise<Blob> {
+
+    if (file.blob) {
+        return file.blob;
+    }
+
+    if (file.webPath) {
+        const response = await fetch(file.webPath);
+
+        if (!response.ok) {
+            throw new Error("Unable to read selected music file.");
+        }
+
+        return await response.blob();
+    }
+
+    throw new Error("No accessible file data found.");
+}

@@ -34,9 +34,9 @@ const LibraryTabs = ({
                     onClick={() => onTabChange(tab)}
                     className={`
                         flex shrink-0 items-center justify-center
-                        rounded-full border px-5 py-3
+                        rounded-full border px-5 py-1.5
                         backdrop-blur-xl shadow-lg
-                        transition-all duration-200
+                        transition-all duration-200 text-sm
                         ${
                             activeTab === tab
                                 ? "border-white/30 bg-white/25 text-white"
