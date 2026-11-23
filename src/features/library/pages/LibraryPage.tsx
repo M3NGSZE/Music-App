@@ -19,17 +19,29 @@ export function LibraryPage() {
 
             <LibraryTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
-            {activeTab === "Songs" && <SongList />}
+            <div className={activeTab === "Songs" ? "block" : "hidden"}>
+                <SongList />
+            </div>
 
-            {activeTab === "Playlists" && <PlayList />}
+            <div className={activeTab === "Playlists" ? "block" : "hidden"}>
+                <PlayList />
+            </div>
 
-            {activeTab === "Favorites" && <FavoriteList />}
+            <div className={activeTab === "Favorites" ? "block" : "hidden"}>
+                <FavoriteList />
+            </div>
 
-            {activeTab === "Artists" && <ArtistList />}
+            <div className={activeTab === "Artists" ? "block" : "hidden"}>
+                <ArtistList />
+            </div>
 
-            {activeTab === "Albums" && <AlbumList />}
+            <div className={activeTab === "Albums" ? "block" : "hidden"}>
+                <AlbumList />
+            </div>
 
-            {activeTab === "Folders" && <FolderList />}
+            <div className={activeTab === "Folders" ? "block" : "hidden"}>
+                <FolderList />
+            </div>
 
         </div>
     );
