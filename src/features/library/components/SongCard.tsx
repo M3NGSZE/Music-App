@@ -1,4 +1,5 @@
 import { MoreHorizontal } from "lucide-react";
+import type { MusicTrack } from "../../../types/MusicTrack";
 
 export interface Song {
     id: string;
@@ -7,11 +8,11 @@ export interface Song {
     coverUrl?: string;
 }
 
-interface SongCardProps {
-    song: Song;
+type SongCardProps = {
+    song: Pick<MusicTrack, "id" | "title" | "artist" | "coverUrl">;
     onClick?: () => void;
     onMoreClick?: () => void;
-}
+};
 
 export default function SongCard({
     song,
