@@ -4,11 +4,14 @@ import {
     getLocalSongs,
     type LocalMusic,
 } from "../../../services/localMusicService";
+import { useAudioPlayer } from "../../../context/useAudioPlayer";
 
 export default function LocalMusicDiscoveryTest() {
     const [songs, setSongs] = useState<LocalMusic[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    const { play } = useAudioPlayer();
 
     async function handleDiscoverMusic() {
         try {
@@ -58,23 +61,30 @@ export default function LocalMusicDiscoveryTest() {
                 Found {songs.length} songs
             </p>
 
-            {songs.map((song) => (
+            {songs.slice(0, 5).map((song) => (
                 <div
-                    key={song.id}
-                    className="border-b py-2"
-                >
-                    <p className="font-medium">
-                        {song.title || song.name}
-                    </p>
+                        key={song.id}
+                        className="border-b py-2"
+                    >
+                        <p className="font-medium">
+                            {song.title || song.name}
+                        </p>
 
-                    <p className="text-sm text-gray-500">
-                        {song.artist} · {song.album}
-                    </p>
+                        <p className="text-sm text-gray-500">
+                            {song.artist} · {song.album}
+                        </p>
 
-                    <p className="text-xs text-gray-400">
-                        {Math.floor(song.duration / 1000)} seconds
-                    </p>
-                </div>
+                        <p className="text-xs text-gray-400">
+                            {Math.floor(song.duration / 1000)} seconds
+                        </p>
+
+                        <button
+                            onClick={() => play(song.uri)}
+                            className="rounded-lg bg-green-600 px-3 py-1 text-white"
+                        >
+                            Test                
+                        </button>
+                    </div>  
             ))}
 
         </div>
