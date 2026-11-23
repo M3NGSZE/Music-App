@@ -1,9 +1,8 @@
-package com.m3ngsze.sentry.musicplayer;
+package com.m3ngsze.sentry.musicplayer.plugins;
 
 import android.media.MediaPlayer;
 import android.net.Uri;
 
-import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
