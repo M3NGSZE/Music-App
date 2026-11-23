@@ -9,7 +9,7 @@ import { useAudioPlayer } from "../../../context/useAudioPlayer";
 import type { LibrarySortOption } from "./LibrarySort";
 import LibrarySort from "./LibrarySort";
 import SongCard from "./SongCard";
-import { getLocalSongsOnce, refreshLocalSongs } from "../../../services/localMusicService";
+import { getLocalSongsOnce } from "../../../services/localMusicService";
 import { useVirtualizer } from "@tanstack/react-virtual";
 
 const SongList = () => {
@@ -26,41 +26,41 @@ const SongList = () => {
 
     const [scrollMargin, setScrollMargin] = useState(0);
 
-    async function handleDiscoverMusic() {
-        try {
-            setLoading(true);
-            setError(null);
+    // async function handleDiscoverMusic() {
+    //     try {
+    //         setLoading(true);
+    //         setError(null);
 
-            const result = await refreshLocalSongs();
+    //         const result = await refreshLocalSongs();
 
-            const tracks: MusicTrack[] = result.map((song) => ({
-                id: song.id,
-                title: song.title || song.name,
-                artist: song.artist,
-                album: song.album,
-                duration: song.duration,
-                source: song.uri,
-                fileName: song.name,
-                dateAdded: Date.now(),
-                isFavorite: false,
-            }));
+    //         const tracks: MusicTrack[] = result.map((song) => ({
+    //             id: song.id,
+    //             title: song.title || song.name,
+    //             artist: song.artist,
+    //             album: song.album,
+    //             duration: song.duration,
+    //             source: song.uri,
+    //             fileName: song.name,
+    //             dateAdded: Date.now(),
+    //             isFavorite: false,
+    //         }));
 
-            setSongs(tracks);
-            saveCachedSongs(tracks);
+    //         setSongs(tracks);
+    //         saveCachedSongs(tracks);
 
-            console.log("Discovered local music:", tracks);
-        } catch (error) {
-            console.error("Music discovery failed:", error);
+    //         console.log("Discovered local music:", tracks);
+    //     } catch (error) {
+    //         console.error("Music discovery failed:", error);
 
-            setError(
-                error instanceof Error
-                    ? error.message
-                    : "Unable to discover device music."
-            );
-        } finally {
-            setLoading(false);
-        }
-    }
+    //         setError(
+    //             error instanceof Error
+    //                 ? error.message
+    //                 : "Unable to discover device music."
+    //         );
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // }
 
     useEffect(() => {
         let cancelled = false;
@@ -111,6 +111,16 @@ const SongList = () => {
         };
     }, []);
 
+    // eslint-disable-next-line react-hooks/incompatible-library
+    const rowVirtualizer = useVirtualizer({
+        count: songs.length,
+        getScrollElement: () =>
+            document.getElementById("main-scroll-container"),
+        estimateSize: () => 72,
+        overscan: 20,
+        scrollMargin,
+    });
+
     useEffect(() => {
         const frame = requestAnimationFrame(() => {
             const scrollContainer = document.getElementById(
@@ -131,14 +141,23 @@ const SongList = () => {
         return () => cancelAnimationFrame(frame);
     }, [songs.length, loading, error]);
 
-    const rowVirtualizer = useVirtualizer({
-        count: songs.length,
-        getScrollElement: () =>
-            document.getElementById("main-scroll-container"),
-        estimateSize: () => 80,
-        overscan: 8,
-        scrollMargin,
-    });
+    useEffect(() => {
+        const frame = requestAnimationFrame(() => {
+            console.log(
+                "VIRTUALIZATION CHECK:",
+                JSON.stringify({
+                    totalSongs: songs.length,
+                    renderedRows: rowVirtualizer.getVirtualItems().length,
+                    totalVirtualHeight: rowVirtualizer.getTotalSize(),
+                    scrollContainer: Boolean(
+                        document.getElementById("main-scroll-container")
+                    ),
+                })
+            );
+        });
+
+        return () => cancelAnimationFrame(frame);
+    }, [songs.length, rowVirtualizer]);
     
     return (
         <div className="flex flex-col">
@@ -153,7 +172,7 @@ const SongList = () => {
                 />
             </div>
 
-            <button
+            {/* <button
                 onClick={handleDiscoverMusic}
                 disabled={loading}
                 className="mb-4 rounded-lg bg-blue-600 px-4 py-2 text-white disabled:opacity-50"
@@ -173,7 +192,7 @@ const SongList = () => {
                 <p className="mb-3 text-sm text-red-500">
                     {error}
                 </p>
-            )}
+            )} */}
 
             {songs.length === 0 && !loading && (
                 <p className="py-6 text-center text-sm text-white/50">

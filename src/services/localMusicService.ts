@@ -14,25 +14,52 @@ export interface LocalMusic {
 }
 
 interface LocalMusicPlugin {
-    getSongs(): Promise<{
+    getSongs(options: {
+        offset: number;
+        limit: number;
+    }): Promise<{
         songs: LocalMusic[];
+        offset: number;
+        limit: number;
+        hasMore: boolean;
     }>;
 }
 
-const LocalMusicPlugin =
+const NativeLocalMusic =
     registerPlugin<LocalMusicPlugin>("LocalMusic");
+
+const BATCH_SIZE = 100;
 
 export async function getLocalSongs(): Promise<LocalMusic[]> {
     console.log("ANDROID MUSIC SCAN STARTED");
-    const result = await LocalMusicPlugin.getSongs();
 
-    return result.songs;
+    const allSongs: LocalMusic[] = [];
+    let offset = 0;
+    let hasMore = true;
+
+    while (hasMore) {
+        const result = await NativeLocalMusic.getSongs({
+            offset,
+            limit: BATCH_SIZE,
+        });
+
+        allSongs.push(...result.songs);
+
+        offset += result.songs.length;
+        hasMore = result.hasMore;
+
+        if (result.songs.length === 0) {
+            break;
+        }
+    }
+
+    console.log("Total songs loaded:", allSongs.length);
+
+    return allSongs;
 }
-
 
 let discoveryPromise: Promise<LocalMusic[]> | null = null;
 
-// Reuse the same discovery request during this app session.
 export function getLocalSongsOnce(): Promise<LocalMusic[]> {
     if (!discoveryPromise) {
         discoveryPromise = getLocalSongs().catch((error) => {
@@ -44,7 +71,6 @@ export function getLocalSongsOnce(): Promise<LocalMusic[]> {
     return discoveryPromise;
 }
 
-// Force a new scan when the user manually refreshes.
 export function refreshLocalSongs(): Promise<LocalMusic[]> {
     discoveryPromise = getLocalSongs().catch((error) => {
         discoveryPromise = null;

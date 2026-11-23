@@ -21,7 +21,19 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
   const engineRef = useRef<PlaybackEngine>(null);
 
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
+  // const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
+
+  const PLAYBACK_STORAGE_KEY = "music-player-last-track";
+  const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(() => {
+    try {
+      const savedTrack = localStorage.getItem(PLAYBACK_STORAGE_KEY);
+
+      return savedTrack ? (JSON.parse(savedTrack) as MusicTrack) : null;
+    } catch (error) {
+      console.error("Failed to restore last played track:", error);
+      return null;
+    }
+  });
 
   function releaseObjectUrl() {
     if (objectUrlRef.current) {
@@ -138,6 +150,7 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
 
   useEffect(() => {
     return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       const audio = audioRef.current;
 
       if (audio) {
@@ -153,6 +166,21 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
       releaseObjectUrl();
     };
   }, []);
+
+  useEffect(() => {
+    try {
+      if (currentTrack) {
+        localStorage.setItem(
+          PLAYBACK_STORAGE_KEY,
+          JSON.stringify(currentTrack),
+        );
+      } else {
+        localStorage.removeItem(PLAYBACK_STORAGE_KEY);
+      }
+    } catch (error) {
+      console.error("Failed to save last played track:", error);
+    }
+  }, [currentTrack]);
 
   return (
     <AudioPlayerContext.Provider
