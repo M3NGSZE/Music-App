@@ -124,6 +124,12 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
   }
 
   async function resume() {
+    // Player hasn't been initialized, restore the saved track.
+    if (!engineRef.current && currentTrack) {
+      await play(currentTrack.source, currentTrack);
+      return;
+    }
+
     if (engineRef.current === "android") {
       try {
         await resumeNativeAudio();
@@ -142,7 +148,6 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
 
     try {
       await audio.play();
-      console.log("Web playback resumed");
     } catch (error) {
       console.error("Web resume failed:", error);
     }
