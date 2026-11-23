@@ -7,7 +7,7 @@ export function MainLayout() {
         <div className="h-screen overflow-hidden bg-app-bg">
             <main
                 id="main-scroll-container"
-                className="h-full overflow-y-auto hide-scrollbar pb-40 px-6 pt-15"
+                className="h-full overflow-y-auto px-6 pt-5 pb-40"
             >
                 <Outlet />
             </main>

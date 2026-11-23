@@ -13,13 +13,17 @@ export function LibraryPage() {
     const [activeTab, setActiveTab] = useState<LibraryTab>("Songs");
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex h-full min-h-0 flex-col gap-6">
             
             <MainHeader title="Library" />
 
             <LibraryTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
-            <div className={activeTab === "Songs" ? "block" : "hidden"}>
+            <div className={
+                    activeTab === "Songs"
+                        ? "flex-1 min-h-0"
+                        : "hidden"
+                }>
                 <SongList />
             </div>
 
