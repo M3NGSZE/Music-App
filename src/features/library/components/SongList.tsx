@@ -1,5 +1,5 @@
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { MusicTrack } from "../../../types/MusicTrack";
 import {
     getCachedSongs,
@@ -11,6 +11,7 @@ import LibrarySort from "./LibrarySort";
 import SongCard from "./SongCard";
 import { getLocalSongsOnce } from "../../../services/localMusicService";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import FastScrollBar from "../../../components/common/FastScrollBar";
 
 const SongList = () => {
     const [sortBy, setSortBy] = useState<LibrarySortOption>("A-Z");
@@ -20,9 +21,21 @@ const SongList = () => {
     const [loading, setLoading] = useState(() => getCachedSongs().length === 0);
     const [error, setError] = useState<string | null>(null);
 
-    const { play } = useAudioPlayer();
+    const { play, currentTrack } = useAudioPlayer();
 
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+
+    const [scrollElement, setScrollElement] = useState<HTMLDivElement | null>(
+        null,
+    );
+
+    const connectScrollElement = useCallback(
+        (element: HTMLDivElement | null) => {
+            scrollContainerRef.current = element;
+            setScrollElement(element);
+        },
+        [],
+    );
 
     useEffect(() => {
         let cancelled = false;
@@ -76,7 +89,7 @@ const SongList = () => {
     // eslint-disable-next-line react-hooks/incompatible-library
     const rowVirtualizer = useVirtualizer({
         count: songs.length,
-        getScrollElement: () => scrollContainerRef.current,
+        getScrollElement: () => scrollElement,
         estimateSize: () => 72,
         overscan: 20,
     });
@@ -109,48 +122,48 @@ const SongList = () => {
             )}
 
             {/* Scrollable song cards */}
-            <div
-                ref={scrollContainerRef}
-                className="min-h-0 flex-1 overflow-y-auto custom-scrollbar"
-            >
-                {songs.length === 0 && !loading && (
-                    <p className="py-6 text-center text-sm text-white/50">
-                        No songs discovered yet.
-                    </p>
-                )}
-
+            <div className="relative min-h-0 flex-1">
                 <div
-                    className="relative w-full"
-                    style={{
-                        height: `${rowVirtualizer.getTotalSize()}px`,
-                    }}
+                    ref={connectScrollElement}
+                    className="h-full overflow-y-auto overflow-x-hidden pr-7"
+                    style={{ scrollbarWidth: "none" }}
                 >
-                    {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-                        const song = songs[virtualRow.index];
+                    <div
+                        className="relative w-full"
+                        style={{
+                            height: `${rowVirtualizer.getTotalSize()}px`,
+                        }}
+                    >
+                        {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                            const song = songs[virtualRow.index];
 
-                        return (
-                            <div
-                                key={song.id}
-                                style={{
-                                    position: "absolute",
-                                    top: 0,
-                                    left: 0,
-                                    width: "100%",
-                                    height: `${virtualRow.size}px`,
-                                    transform: `translateY(${virtualRow.start}px)`,
-                                }}
-                            >
-                                <SongCard
-                                    song={song}
-                                    onClick={() => play(song.source, song)}
-                                    onMoreClick={() =>
-                                        console.log("More:", song.title)
-                                    }
-                                />
-                            </div>
-                        );
-                    })}
+                            return (
+                                <div
+                                    key={song.id}
+                                    style={{
+                                        position: "absolute",
+                                        top: 0,
+                                        left: 0,
+                                        width: "100%",
+                                        height: `${virtualRow.size}px`,
+                                        transform: `translateY(${virtualRow.start}px)`,
+                                    }}
+                                >
+                                    <SongCard
+                                        song={song}
+                                        isActive={currentTrack?.id === song.id}
+                                        onClick={() => play(song.source, song)}
+                                        onMoreClick={() =>
+                                            console.log("More:", song.title)
+                                        }
+                                    />
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
+
+                <FastScrollBar scrollElement={scrollElement} />
             </div>
         </div>
     );
