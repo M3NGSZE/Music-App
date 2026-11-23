@@ -4,14 +4,15 @@ import {
     getLocalSongs,
     type LocalMusic,
 } from "../../../services/localMusicService";
-import { useAudioPlayer } from "../../../context/useAudioPlayer";
+//import { useAudioPlayer } from "../../../context/useAudioPlayer";
+import { playNativeAudio } from "../../../services/nativeAudioPlayerService";
 
 export default function LocalMusicDiscoveryTest() {
     const [songs, setSongs] = useState<LocalMusic[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const { play } = useAudioPlayer();
+    //const { play } = useAudioPlayer();
 
     async function handleDiscoverMusic() {
         try {
@@ -33,6 +34,15 @@ export default function LocalMusicDiscoveryTest() {
             );
         } finally {
             setLoading(false);
+        }
+    }
+
+    async function handleNativePlay(uri: string) {
+        try {
+            await playNativeAudio(uri);
+            console.log("Native playback started");
+        } catch (error) {
+            console.error("Native playback failed:", error);
         }
     }
 
@@ -79,7 +89,7 @@ export default function LocalMusicDiscoveryTest() {
                         </p>
 
                         <button
-                            onClick={() => play(song.uri)}
+                            onClick={() => handleNativePlay(song.uri)}
                             className="rounded-lg bg-green-600 px-3 py-1 text-white"
                         >
                             Test                
