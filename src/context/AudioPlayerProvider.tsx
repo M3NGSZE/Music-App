@@ -13,7 +13,7 @@ interface AudioPlayerProviderProps {
   children: ReactNode;
 }
 
-type PlaybackEngine = "web" | "android" | null;
+type PlaybackEngine = "web" | "native" | null;
 
 export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -51,12 +51,20 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
       setCurrentTrack(track);
     }
 
-    // Android MediaStore playback
-    if (
-      Capacitor.getPlatform() === "android" &&
+    // Native playback for Android and iOS
+    const platform = Capacitor.getPlatform();
+
+    const isAndroidNative =
+      platform === "android" &&
       typeof source === "string" &&
-      source.startsWith("content://")
-    ) {
+      source.startsWith("content://");
+
+    const isIOSNative =
+      platform === "ios" &&
+      typeof source === "string" &&
+      source.startsWith("file://");
+
+    if (isAndroidNative || isIOSNative) {
       const audio = audioRef.current;
 
       audio?.pause();
@@ -65,15 +73,15 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
 
       releaseObjectUrl();
 
-      engineRef.current = "android";
+      engineRef.current = "native";
 
       try {
         await playNativeAudio(source);
         setIsPlaying(true);
-
-        console.log("Android native playback started");
+        console.log(`${platform} native playback started`);
       } catch (error) {
         setIsPlaying(false);
+        engineRef.current = null;
         console.error("Native playback failed:", error);
       }
 
@@ -81,7 +89,7 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
     }
 
     // Web playback (also used for imported Blob files)
-    if (engineRef.current === "android") {
+    if (engineRef.current === "native") {
       await pauseNativeAudio();
     }
 
@@ -102,19 +110,23 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
 
     engineRef.current = "web";
 
+    setIsPlaying(false);
+
     audio.src = audioSource;
     audio.load();
 
     try {
       await audio.play();
+      setIsPlaying(true);
       console.log("Web playback started");
     } catch (error) {
+      setIsPlaying(false);
       console.error("Web playback failed:", error);
     }
   }
 
   function pause() {
-    if (engineRef.current === "android") {
+    if (engineRef.current === "native") {
       pauseNativeAudio()
         .then(() => setIsPlaying(false))
         .catch((error) => console.error("Native pause failed:", error));
@@ -132,7 +144,7 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
       return;
     }
 
-    if (engineRef.current === "android") {
+    if (engineRef.current === "native") {
       try {
         await resumeNativeAudio();
         setIsPlaying(true);
@@ -199,7 +211,7 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
         audio.load();
       }
 
-      if (engineRef.current === "android") {
+      if (engineRef.current === "native") {
         pauseNativeAudio().catch(console.error);
       }
 

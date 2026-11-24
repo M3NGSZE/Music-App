@@ -18,6 +18,7 @@
 		9582B6832FE993A70072D4E8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9582B6822FE993A50072D4E8 /* SceneDelegate.swift */; };
         A10000000000000000000001 /* MusicRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000001 /* MusicRepository.swift */; };
         A10000000000000000000002 /* LocalMusicPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* LocalMusicPlugin.swift */; };
+		A10000000000000000000003 /* NativeAudioPlayerPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* NativeAudioPlayerPlugin.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		958DCC722DB07C7200EA8C5F /* debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = debug.xcconfig; path = ../debug.xcconfig; sourceTree = SOURCE_ROOT; };
         A20000000000000000000001 /* MusicRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Plugins/LocalMusic/MusicRepository.swift; sourceTree = "<group>"; };
         A20000000000000000000002 /* LocalMusicPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Plugins/LocalMusic/LocalMusicPlugin.swift; sourceTree = "<group>"; };
+		A20000000000000000000003 /* NativeAudioPlayerPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Plugins/NativeAudioPlayer/NativeAudioPlayerPlugin.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +81,7 @@
 				50B271D01FEDC1A000F3C39B /* public */,
                 A20000000000000000000001 /* MusicRepository.swift */,
                 A20000000000000000000002 /* LocalMusicPlugin.swift */,
+				A20000000000000000000003 /* NativeAudioPlayerPlugin.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -168,6 +171,7 @@
 				9582B6832FE993A70072D4E8 /* SceneDelegate.swift in Sources */,
                 A10000000000000000000001 /* MusicRepository.swift in Sources */,
                 A10000000000000000000002 /* LocalMusicPlugin.swift in Sources */,
+				A10000000000000000000003 /* NativeAudioPlayerPlugin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

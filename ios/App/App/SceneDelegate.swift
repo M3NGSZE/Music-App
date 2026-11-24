@@ -6,6 +6,7 @@ class MusicPlayerBridgeViewController: CAPBridgeViewController {
 
     override open func capacitorDidLoad() {
         bridge?.registerPluginInstance(LocalMusicPlugin())
+        bridge?.registerPluginInstance(NativeAudioPlayerPlugin())
     }
 }
 
