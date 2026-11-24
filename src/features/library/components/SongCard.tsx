@@ -18,7 +18,7 @@ export default function SongCard({
     return (
         <div
             onClick={onClick}
-            className="flex items-center gap-3 rounded-xl py-2 pl-2 pr-0 transition-colors hover:bg-white/5"
+            className="flex items-center gap-3 rounded-xl py-2 pl-2 pr-1 transition-colors hover:bg-white/5"
         >
             <img
                 src={song.coverUrl || "/assets/images/default-cover.png"}

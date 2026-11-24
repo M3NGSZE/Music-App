@@ -21,7 +21,7 @@ const SongList = () => {
     const [loading, setLoading] = useState(() => getCachedSongs().length === 0);
     const [error, setError] = useState<string | null>(null);
 
-    const { playQueue, currentTrack } = useAudioPlayer();
+    const { playQueue, currentTrack, isPlaying } = useAudioPlayer();
 
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -125,7 +125,7 @@ const SongList = () => {
             <div className="relative min-h-0 flex-1">
                 <div
                     ref={connectScrollElement}
-                    className="h-full overflow-y-auto overflow-x-hidden pr-7"
+                    className="h-full overflow-y-auto overflow-x-hidden pr-4"
                     style={{ scrollbarWidth: "none" }}
                 >
                     <div
@@ -151,11 +151,9 @@ const SongList = () => {
                                 >
                                     <SongCard
                                         song={song}
-                                        isActive={currentTrack?.id === song.id}
+                                        isActive={currentTrack?.id === song.id && isPlaying}
                                         onClick={() => playQueue(songs, virtualRow.index)}
-                                        onMoreClick={() =>
-                                            console.log("More:", song.title)
-                                        }
+                                        onMoreClick={() => console.log("More:", song.title)}
                                     />
                                 </div>
                             );
