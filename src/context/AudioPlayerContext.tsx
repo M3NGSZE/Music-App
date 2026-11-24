@@ -1,11 +1,16 @@
-
 import { createContext } from "react";
 import type { MusicTrack } from "../types/MusicTrack";
 
 export interface AudioPlayerContextType {
     isPlaying: boolean;
     currentTrack: MusicTrack | null;
+    queue: MusicTrack[];
+
     play: (source: Blob | string, track?: MusicTrack) => Promise<void>;
+    playQueue: (tracks: MusicTrack[], index: number) => Promise<void>;
+    playNext: () => Promise<void>;
+    playPrevious: () => Promise<void>;
+
     pause: () => void;
     resume: () => Promise<void>;
 }

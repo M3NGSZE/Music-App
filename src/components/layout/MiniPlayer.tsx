@@ -2,7 +2,8 @@ import { FastForward, Pause, Rewind, Play } from "lucide-react";
 import { useAudioPlayer } from "../../context/useAudioPlayer";
 
 export default function MiniPlayer() {
-  const { isPlaying, currentTrack, pause, resume } = useAudioPlayer();
+  const { isPlaying, currentTrack, pause, resume, playNext, playPrevious } =
+    useAudioPlayer();
 
   const handlePlayPause = async () => {
     try {
@@ -13,6 +14,22 @@ export default function MiniPlayer() {
       }
     } catch (error) {
       console.error("Audio playback error:", error);
+    }
+  };
+
+  const handleNext = async () => {
+    try {
+      await playNext();
+    } catch (error) {
+      console.error("Next track playback error:", error);
+    }
+  };
+
+  const handlePrevious = async () => {
+    try {
+      await playPrevious();
+    } catch (error) {
+      console.error("Previous track playback error:", error);
     }
   };
 
@@ -40,7 +57,11 @@ export default function MiniPlayer() {
         </div>
 
         <div className="flex w-[30%] items-center justify-center gap-2">
-          <button className="text-white/70 transition hover:text-white">
+          <button
+            onClick={handlePrevious}
+            className="text-white/70 transition hover:text-white"
+            aria-label="Previous track"
+          >
             <Rewind size={20} />
           </button>
 
@@ -52,7 +73,11 @@ export default function MiniPlayer() {
             {isPlaying ? <Pause size={22} /> : <Play size={22} />}
           </button>
 
-          <button className="text-white/70 transition hover:text-white">
+          <button
+            onClick={handleNext}
+            className="text-white/70 transition hover:text-white"
+            aria-label="Next track"
+          >
             <FastForward size={20} />
           </button>
         </div>

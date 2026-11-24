@@ -21,7 +21,7 @@ const SongList = () => {
     const [loading, setLoading] = useState(() => getCachedSongs().length === 0);
     const [error, setError] = useState<string | null>(null);
 
-    const { play, currentTrack } = useAudioPlayer();
+    const { playQueue, currentTrack } = useAudioPlayer();
 
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -152,7 +152,7 @@ const SongList = () => {
                                     <SongCard
                                         song={song}
                                         isActive={currentTrack?.id === song.id}
-                                        onClick={() => play(song.source, song)}
+                                        onClick={() => playQueue(songs, virtualRow.index)}
                                         onMoreClick={() =>
                                             console.log("More:", song.title)
                                         }

@@ -21,7 +21,6 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
   const engineRef = useRef<PlaybackEngine>(null);
 
   const [isPlaying, setIsPlaying] = useState(false);
-  // const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
 
   const PLAYBACK_STORAGE_KEY = "music-player-last-track";
   const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(() => {
@@ -34,6 +33,9 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
       return null;
     }
   });
+
+  const [queue, setQueue] = useState<MusicTrack[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(-1);
 
   function releaseObjectUrl() {
     if (objectUrlRef.current) {
@@ -153,6 +155,39 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
     }
   }
 
+  async function playQueue(tracks: MusicTrack[], index: number) {
+    const selectedTrack = tracks[index];
+
+    if (!selectedTrack) return;
+
+    setQueue(tracks);
+    setCurrentIndex(index);
+
+    await play(selectedTrack.source, selectedTrack);
+  }
+
+  async function playNext() {
+    const nextIndex = currentIndex + 1;
+
+    if (nextIndex >= queue.length) return;
+
+    const nextTrack = queue[nextIndex];
+
+    setCurrentIndex(nextIndex);
+    await play(nextTrack.source, nextTrack);
+  }
+
+  async function playPrevious() {
+    const previousIndex = currentIndex - 1;
+
+    if (previousIndex < 0) return;
+
+    const previousTrack = queue[previousIndex];
+
+    setCurrentIndex(previousIndex);
+    await play(previousTrack.source, previousTrack);
+  }
+
   useEffect(() => {
     return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -192,7 +227,11 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
       value={{
         isPlaying,
         currentTrack,
+        queue,
         play,
+        playQueue,
+        playNext,
+        playPrevious,
         pause,
         resume,
       }}
