@@ -1,3 +1,4 @@
+
 package com.m3ngsze.sentry.musicplayer.music;
 
 import android.content.ContentResolver;
@@ -13,8 +14,12 @@ import androidx.annotation.RequiresApi;
 
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
+
 public class MusicRepository {
     private final ContentResolver resolver;
+
+    private static final Uri ALBUM_ART_URI =
+            Uri.parse("content://media/external/audio/albumart");
 
     public MusicRepository(Context context) {
         resolver = context.getContentResolver();
@@ -30,6 +35,7 @@ public class MusicRepository {
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.ARTIST,
                 MediaStore.Audio.Media.ALBUM,
+                MediaStore.Audio.Media.ALBUM_ID,
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.MIME_TYPE,
                 MediaStore.Audio.Media.DISPLAY_NAME,
@@ -69,10 +75,14 @@ public class MusicRepository {
                             )
                     );
 
-                    Uri contentUri = ContentUris.withAppendedId(
-                            collection,
-                            id
+                    long albumId = cursor.getLong(
+                            cursor.getColumnIndexOrThrow(
+                                    MediaStore.Audio.Media.ALBUM_ID
+                            )
                     );
+
+                    Uri contentUri =
+                            ContentUris.withAppendedId(collection, id);
 
                     JSObject song = new JSObject();
 
@@ -92,6 +102,7 @@ public class MusicRepository {
                                     MediaStore.Audio.Media.ALBUM
                             )
                     ));
+                    song.put("albumId", albumId);
                     song.put("duration", cursor.getLong(
                             cursor.getColumnIndexOrThrow(
                                     MediaStore.Audio.Media.DURATION
@@ -113,6 +124,17 @@ public class MusicRepository {
                             )
                     ));
                     song.put("uri", contentUri.toString());
+
+                    if (albumId > 0) {
+                        Uri artworkUri = ContentUris.withAppendedId(
+                                ALBUM_ART_URI,
+                                albumId
+                        );
+
+                        song.put("coverUri", artworkUri.toString());
+                    } else {
+                        song.put("coverUri", (String) null);
+                    }
 
                     songs.put(song);
                 }

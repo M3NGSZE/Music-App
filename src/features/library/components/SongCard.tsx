@@ -23,6 +23,10 @@ export default function SongCard({
             <img
                 src={song.coverUrl || "/assets/images/default-cover.png"}
                 alt={song.title}
+                onError={(event) => {
+                    event.currentTarget.onerror = null;
+                    event.currentTarget.src = "/assets/images/default-cover.png";
+                }}
                 className="h-14 w-14 shrink-0 rounded-lg object-cover"
             />
 

@@ -12,6 +12,7 @@ import SongCard from "./SongCard";
 import { getLocalSongsOnce } from "../../../services/localMusicService";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import FastScrollBar from "../../../components/common/FastScrollBar";
+import { Capacitor } from "@capacitor/core";
 
 const SongList = () => {
     const [sortBy, setSortBy] = useState<LibrarySortOption>("A-Z");
@@ -53,6 +54,9 @@ const SongList = () => {
                     album: song.album,
                     duration: song.duration,
                     source: song.uri,
+                    coverUrl: song.coverUri
+                        ? Capacitor.convertFileSrc(song.coverUri)
+                        : undefined,
                     fileName: song.name,
                     dateAdded: Date.now(),
                     isFavorite: false,

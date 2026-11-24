@@ -6,11 +6,13 @@ export interface LocalMusic {
     title: string;
     artist: string;
     album: string;
+    albumId: number;
     duration: number;
     mimeType: string;
     name: string;
     size: number;
     uri: string;
+    coverUri?: string | null;
 }
 
 interface LocalMusicPlugin {
