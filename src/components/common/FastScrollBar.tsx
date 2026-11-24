@@ -134,7 +134,7 @@ export default function FastScrollBar({
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerUp}
-            className="absolute right-0 top-0 z-20 flex h-full w-7 justify-center touch-none"
+            className="absolute -right-1 top-0 z-20 flex h-full w-7 justify-center touch-none"
         >
             {scrollInfo.height > 0 && (
                 <div
