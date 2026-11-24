@@ -4,10 +4,10 @@ import MiniPlayer from "./MiniPlayer";
 
 export function MainLayout() {
     return (
-        <div className="h-screen overflow-hidden bg-app-bg">
+        <div className="h-screen w-full overflow-hidden bg-app-bg">
             <main
                 id="main-scroll-container"
-                className="h-full overflow-y-auto px-6 pt-10 pb-40"
+                className="h-full w-full min-w-0 overflow-x-hidden overflow-y-auto px-3 pt-10 pb-40"
             >
                 <Outlet />
             </main>

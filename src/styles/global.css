@@ -16,3 +16,18 @@ body {
     background-color: var(--color-app-bg);
     color: var(--color-app-primary);
 }
+
+
+@keyframes music-bar {
+    0%, 100% {
+        transform: scaleY(0.4);
+    }
+    50% {
+        transform: scaleY(1);
+    }
+}
+
+.animate-music-bar {
+    animation: music-bar 0.7s ease-in-out infinite;
+    transform-origin: center;
+}

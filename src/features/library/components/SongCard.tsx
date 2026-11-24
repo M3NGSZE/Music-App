@@ -1,5 +1,5 @@
 
-import { MoreHorizontal } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import type { MusicTrack } from "../../../types/MusicTrack";
 
 type SongCardProps = {
@@ -18,7 +18,7 @@ export default function SongCard({
     return (
         <div
             onClick={onClick}
-            className="flex items-center gap-3 rounded-xl p-2 transition-colors hover:bg-white/5"
+            className="flex items-center gap-3 rounded-xl py-2 pl-2 pr-0 transition-colors hover:bg-white/5"
         >
             <img
                 src={song.coverUrl || "/assets/images/default-cover.png"}
@@ -44,6 +44,17 @@ export default function SongCard({
                 </p>
             </div>
 
+            {isActive && (
+                <div
+                    className="flex h-5 shrink-0 items-center gap-0.5"
+                    aria-label="Currently playing"
+                >
+                    <span className="h-2 w-0.5 animate-music-bar rounded-full bg-purple-400 [animation-delay:0ms]" />
+                    <span className="h-4 w-0.5 animate-music-bar rounded-full bg-purple-400 [animation-delay:150ms]" />
+                    <span className="h-3 w-0.5 animate-music-bar rounded-full bg-purple-400 [animation-delay:300ms]" />
+                </div>
+            )}
+
             <button
                 onClick={(e) => {
                     e.stopPropagation();
@@ -52,7 +63,7 @@ export default function SongCard({
                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white/60 transition-colors hover:bg-white/10 hover:text-white"
                 aria-label={`More options for ${song.title}`}
             >
-                <MoreHorizontal size={21} />
+                <MoreVertical size={21} />
             </button>
         </div>
     );
