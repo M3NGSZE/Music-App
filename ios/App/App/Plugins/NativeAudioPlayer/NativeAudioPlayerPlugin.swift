@@ -73,17 +73,12 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin, AVAudioPlayer
         call.resolve()
     }
 
-    func audioPlayerDidFinishPlaying(
-        _ player: AVAudioPlayer,
-        successfully flag: Bool
+    public func audioPlayerDidFinishPlaying(
+    _ player: AVAudioPlayer,
+    successfully flag: Bool
     ) {
-        guard player === audioPlayer else {
-            return
-        }
-
-        guard flag else {
-            return
-        }
+        guard player === audioPlayer else { return }
+        guard flag else { return }
 
         notifyListeners("playbackCompleted", data: [:])
     }
