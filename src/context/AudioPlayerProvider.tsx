@@ -1,11 +1,17 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { Capacitor } from "@capacitor/core";
-
 import { AudioPlayerContext } from "./AudioPlayerContext";
 import {
   playNativeAudio,
   pauseNativeAudio,
   resumeNativeAudio,
+  addNativePlaybackCompletedListener,
 } from "../services/nativeAudioPlayerService";
 import type { MusicTrack } from "../types/MusicTrack";
 
@@ -19,14 +25,15 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const objectUrlRef = useRef<string | null>(null);
   const engineRef = useRef<PlaybackEngine>(null);
+  const playNextRef = useRef<() => Promise<void>>(async () => {});
 
   const [isPlaying, setIsPlaying] = useState(false);
 
   const PLAYBACK_STORAGE_KEY = "music-player-last-track";
+
   const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(() => {
     try {
       const savedTrack = localStorage.getItem(PLAYBACK_STORAGE_KEY);
-
       return savedTrack ? (JSON.parse(savedTrack) as MusicTrack) : null;
     } catch (error) {
       console.error("Failed to restore last played track:", error);
@@ -37,95 +44,101 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
   const [queue, setQueue] = useState<MusicTrack[]>([]);
   const [currentIndex, setCurrentIndex] = useState(-1);
 
-  function releaseObjectUrl() {
+  // Release previously created Blob URLs
+  const releaseObjectUrl = useCallback(() => {
     if (objectUrlRef.current) {
       URL.revokeObjectURL(objectUrlRef.current);
       objectUrlRef.current = null;
     }
-  }
+  }, []);
 
-  async function play(source: Blob | string, track?: MusicTrack) {
-    console.log("PLAY called:", source);
+  // Play a track using native or web playback
+  const play = useCallback(
+    async (source: Blob | string, track?: MusicTrack) => {
+      console.log("PLAY called:", source);
 
-    if (track) {
-      setCurrentTrack(track);
-    }
+      if (track) {
+        setCurrentTrack(track);
+      }
 
-    // Native playback for Android and iOS
-    const platform = Capacitor.getPlatform();
+      // Native playback for Android and iOS
+      const platform = Capacitor.getPlatform();
 
-    const isAndroidNative =
-      platform === "android" &&
-      typeof source === "string" &&
-      source.startsWith("content://");
+      const isAndroidNative =
+        platform === "android" &&
+        typeof source === "string" &&
+        source.startsWith("content://");
 
-    const isIOSNative =
-      platform === "ios" &&
-      typeof source === "string" &&
-      source.startsWith("file://");
+      const isIOSNative =
+        platform === "ios" &&
+        typeof source === "string" &&
+        source.startsWith("file://");
 
-    if (isAndroidNative || isIOSNative) {
+      if (isAndroidNative || isIOSNative) {
+        const audio = audioRef.current;
+
+        audio?.pause();
+        audio?.removeAttribute("src");
+        audio?.load();
+
+        releaseObjectUrl();
+
+        engineRef.current = "native";
+
+        try {
+          await playNativeAudio(source);
+          setIsPlaying(true);
+          console.log(`${platform} native playback started`);
+        } catch (error) {
+          setIsPlaying(false);
+          engineRef.current = null;
+          console.error("Native playback failed:", error);
+        }
+
+        return;
+      }
+
+      // Web playback (also used for imported Blob files)
+      if (engineRef.current === "native") {
+        await pauseNativeAudio();
+      }
+
       const audio = audioRef.current;
 
-      audio?.pause();
-      audio?.removeAttribute("src");
-      audio?.load();
+      if (!audio) return;
 
       releaseObjectUrl();
 
-      engineRef.current = "native";
+      let audioSource: string;
 
-      try {
-        await playNativeAudio(source);
-        setIsPlaying(true);
-        console.log(`${platform} native playback started`);
-      } catch (error) {
-        setIsPlaying(false);
-        engineRef.current = null;
-        console.error("Native playback failed:", error);
+      if (source instanceof Blob) {
+        audioSource = URL.createObjectURL(source);
+        objectUrlRef.current = audioSource;
+      } else {
+        audioSource = source;
       }
 
-      return;
-    }
+      engineRef.current = "web";
 
-    // Web playback (also used for imported Blob files)
-    if (engineRef.current === "native") {
-      await pauseNativeAudio();
-    }
-
-    const audio = audioRef.current;
-
-    if (!audio) return;
-
-    releaseObjectUrl();
-
-    let audioSource: string;
-
-    if (source instanceof Blob) {
-      audioSource = URL.createObjectURL(source);
-      objectUrlRef.current = audioSource;
-    } else {
-      audioSource = source;
-    }
-
-    engineRef.current = "web";
-
-    setIsPlaying(false);
-
-    audio.src = audioSource;
-    audio.load();
-
-    try {
-      await audio.play();
-      setIsPlaying(true);
-      console.log("Web playback started");
-    } catch (error) {
       setIsPlaying(false);
-      console.error("Web playback failed:", error);
-    }
-  }
 
-  function pause() {
+      audio.src = audioSource;
+      audio.load();
+
+      try {
+        await audio.play();
+        setIsPlaying(true);
+        console.log("Web playback started");
+      } catch (error) {
+        setIsPlaying(false);
+        console.error("Web playback failed:", error);
+      }
+    },
+    [releaseObjectUrl],
+  );
+
+  // Pause playback
+  const pause = useCallback(() => {
     if (engineRef.current === "native") {
       pauseNativeAudio()
         .then(() => setIsPlaying(false))
@@ -135,9 +148,10 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
     }
 
     audioRef.current?.pause();
-  }
+  }, []);
 
-  async function resume() {
+  // Resume playback
+  const resume = useCallback(async () => {
     // Player hasn't been initialized, restore the saved track.
     if (!engineRef.current && currentTrack) {
       await play(currentTrack.source, currentTrack);
@@ -165,20 +179,25 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
     } catch (error) {
       console.error("Web resume failed:", error);
     }
-  }
+  }, [currentTrack, play]);
 
-  async function playQueue(tracks: MusicTrack[], index: number) {
-    const selectedTrack = tracks[index];
+  // Play a selected track and establish its queue
+  const playQueue = useCallback(
+    async (tracks: MusicTrack[], index: number) => {
+      const selectedTrack = tracks[index];
 
-    if (!selectedTrack) return;
+      if (!selectedTrack) return;
 
-    setQueue(tracks);
-    setCurrentIndex(index);
+      setQueue(tracks);
+      setCurrentIndex(index);
 
-    await play(selectedTrack.source, selectedTrack);
-  }
+      await play(selectedTrack.source, selectedTrack);
+    },
+    [play],
+  );
 
-  async function playNext() {
+  // Play the next track
+  const playNext = useCallback(async () => {
     const nextIndex = currentIndex + 1;
 
     if (nextIndex >= queue.length) return;
@@ -187,9 +206,15 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
 
     setCurrentIndex(nextIndex);
     await play(nextTrack.source, nextTrack);
-  }
+  }, [currentIndex, queue, play]);
 
-  async function playPrevious() {
+  // Keep the latest playNext function available to native and audio events
+  useEffect(() => {
+    playNextRef.current = playNext;
+  }, [playNext]);
+
+  // Play the previous track
+  const playPrevious = useCallback(async () => {
     const previousIndex = currentIndex - 1;
 
     if (previousIndex < 0) return;
@@ -198,8 +223,9 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
 
     setCurrentIndex(previousIndex);
     await play(previousTrack.source, previousTrack);
-  }
+  }, [currentIndex, queue, play]);
 
+  // Cleanup playback resources when the provider unmounts
   useEffect(() => {
     return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -217,8 +243,9 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
 
       releaseObjectUrl();
     };
-  }, []);
+  }, [releaseObjectUrl]);
 
+  // Save the current track
   useEffect(() => {
     try {
       if (currentTrack) {
@@ -233,6 +260,40 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
       console.error("Failed to save last played track:", error);
     }
   }, [currentTrack]);
+
+  // Listen for native playback completion
+  useEffect(() => {
+    let listener: { remove: () => Promise<void> } | undefined;
+    let cancelled = false;
+
+    addNativePlaybackCompletedListener(() => {
+      console.log("Native playback completed");
+
+      setIsPlaying(false);
+      void playNextRef.current();
+    })
+      .then((handle) => {
+        if (cancelled) {
+          void handle.remove();
+        } else {
+          listener = handle;
+        }
+      })
+      .catch((error) => {
+        console.error(
+          "Failed to register playback completion listener:",
+          error,
+        );
+      });
+
+    return () => {
+      cancelled = true;
+
+      if (listener) {
+        void listener.remove();
+      }
+    };
+  }, []);
 
   return (
     <AudioPlayerContext.Provider
@@ -252,7 +313,10 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
         ref={audioRef}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
-        onEnded={() => setIsPlaying(false)}
+        onEnded={() => {
+          setIsPlaying(false);
+          void playNextRef.current();
+        }}
         preload="metadata"
       />
 

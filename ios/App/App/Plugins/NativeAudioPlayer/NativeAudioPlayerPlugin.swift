@@ -4,7 +4,7 @@ import AVFoundation
 import Capacitor
 
 @objc(NativeAudioPlayerPlugin)
-public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
+public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin, AVAudioPlayerDelegate {
 
     public let identifier = "NativeAudioPlayerPlugin"
     public let jsName = "NativeAudioPlayer"
@@ -38,6 +38,7 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
             audioPlayer = nil
 
             let player = try AVAudioPlayer(contentsOf: url)
+            player.delegate = self
             player.prepareToPlay()
 
             guard player.play() else {
@@ -70,5 +71,20 @@ public class NativeAudioPlayerPlugin: CAPPlugin, CAPBridgedPlugin {
         }
 
         call.resolve()
+    }
+
+    func audioPlayerDidFinishPlaying(
+        _ player: AVAudioPlayer,
+        successfully flag: Bool
+    ) {
+        guard player === audioPlayer else {
+            return
+        }
+
+        guard flag else {
+            return
+        }
+
+        notifyListeners("playbackCompleted", data: [:])
     }
 }

@@ -1,10 +1,18 @@
 
-import { registerPlugin } from "@capacitor/core";
+import {
+    registerPlugin,
+    type PluginListenerHandle,
+} from "@capacitor/core";
 
 interface NativeAudioPlayerPlugin {
     play(options: { uri: string }): Promise<void>;
     pause(): Promise<void>;
     resume(): Promise<void>;
+
+    addListener(
+        eventName: "playbackCompleted",
+        listener: () => void
+    ): Promise<PluginListenerHandle>;
 }
 
 const NativeAudioPlayer =
@@ -20,4 +28,10 @@ export async function pauseNativeAudio(): Promise<void> {
 
 export async function resumeNativeAudio(): Promise<void> {
     await NativeAudioPlayer.resume();
+}
+
+export function addNativePlaybackCompletedListener(
+    callback: () => void
+): Promise<PluginListenerHandle> {
+    return NativeAudioPlayer.addListener("playbackCompleted", callback);
 }
