@@ -40,9 +40,13 @@ export default function MiniPlayer() {
       <div className="flex items-center rounded-2xl border border-white/15 bg-white/8 p-2 shadow-[0_8px_32px_rgba(0,0,0,0.35)] backdrop-blur-2xl">
         <div className="flex w-[70%] min-w-0 items-center gap-3">
           <img
-            src={currentTrack.coverUrl || "/assets/images/default-cover.png"}
-            alt={currentTrack.title}
-            className="h-12 w-12 shrink-0 rounded-xl object-cover"
+            src={currentTrack?.coverUrl || "/assets/images/default-cover.png"}
+            alt={currentTrack?.title || "Unknown track"}
+            onError={(event) => {
+              event.currentTarget.onerror = null;
+              event.currentTarget.src = "/assets/images/default-cover.png";
+            }}
+            className="h-12 w-12 shrink-0 rounded-lg object-cover"
           />
 
           <div className="flex min-w-0 flex-col justify-center">
