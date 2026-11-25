@@ -33,7 +33,7 @@ const NativeLocalMusic =
 const BATCH_SIZE = 100;
 
 export async function getLocalSongs(): Promise<LocalMusic[]> {
-    console.log("ANDROID MUSIC SCAN STARTED");
+    console.log("LOCAL MUSIC SCAN STARTED");
 
     const allSongs: LocalMusic[] = [];
     let offset = 0;
