@@ -164,8 +164,7 @@ class MusicRepository {
         }
 
         guard let value = try? await item.load(.stringValue),
-              let value,
-              !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         else {
             return nil
         }
@@ -184,9 +183,7 @@ class MusicRepository {
             return nil
         }
 
-        guard let artworkData = try? await artworkItem.load(.dataValue),
-              let artworkData
-        else {
+        guard let artworkData = try? await artworkItem.load(.dataValue) else {
             return nil
         }
 
