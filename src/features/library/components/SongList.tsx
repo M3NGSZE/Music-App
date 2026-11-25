@@ -155,7 +155,8 @@ const SongList = () => {
                                 >
                                     <SongCard
                                         song={song}
-                                        isActive={currentTrack?.id === song.id && isPlaying}
+                                        isActive={currentTrack?.id === song.id}
+                                        isPlaying={isPlaying}
                                         onClick={() => playQueue(songs, virtualRow.index)}
                                         onMoreClick={() => console.log("More:", song.title)}
                                     />

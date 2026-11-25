@@ -5,6 +5,7 @@ import type { MusicTrack } from "../../../types/MusicTrack";
 type SongCardProps = {
     song: Pick<MusicTrack, "id" | "title" | "artist" | "coverUrl">;
     isActive?: boolean;
+    isPlaying?: boolean;
     onClick?: () => void;
     onMoreClick?: () => void;
 };
@@ -12,6 +13,7 @@ type SongCardProps = {
 export default function SongCard({
     song,
     isActive = false,
+    isPlaying = false,
     onClick,
     onMoreClick,
 }: SongCardProps) {
@@ -48,7 +50,7 @@ export default function SongCard({
                 </p>
             </div>
 
-            {isActive && (
+            {isActive && isPlaying && (
                 <div
                     className="flex h-5 shrink-0 items-center gap-0.5"
                     aria-label="Currently playing"
